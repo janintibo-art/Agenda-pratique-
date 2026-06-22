@@ -59,7 +59,7 @@ jobs:
         run: |
           set -e
           npm init -y >/dev/null
-          npm install @capacitor/core@^6 @capacitor/cli@^6 @capacitor/android@^6 @capacitor/local-notifications@^6
+          npm install @capacitor/core@^6 @capacitor/cli@^6 @capacitor/android@^6 @capacitor/local-notifications@^6 @capacitor/haptics@^6
           cat > capacitor.config.json <<JSON
           {
             "appId": "com.monagenda.app",
@@ -69,6 +69,20 @@ jobs:
           JSON
           npx cap add android
           npx cap sync android
+
+      - name: Ajouter le widget d'Ã©cran d'accueil (natif)
+        run: |
+          set -e
+          SRC="${WEBDIR}/android-widget"
+          MAIN="android/app/src/main"
+          mkdir -p "$MAIN/java/com/monagenda/app" "$MAIN/res/layout" "$MAIN/res/xml" "$MAIN/res/drawable"
+          cp "$SRC/MonAgendaWidget.java"       "$MAIN/java/com/monagenda/app/MonAgendaWidget.java"
+          cp "$SRC/widget_mon_agenda.xml"      "$MAIN/res/layout/widget_mon_agenda.xml"
+          cp "$SRC/mon_agenda_widget_info.xml" "$MAIN/res/xml/mon_agenda_widget_info.xml"
+          cp "$SRC/widget_background.xml"       "$MAIN/res/drawable/widget_background.xml"
+          cp "${WEBDIR}/assets/icons/lotus-logo.png" "$MAIN/res/drawable/widget_lotus.png"
+          python3 "$SRC/patch_manifest.py"
+          echo "Widget injectÃ© dans le projet Android."
 
       - name: Compiler l'APK (debug)
         run: |
