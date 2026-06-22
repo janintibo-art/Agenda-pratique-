@@ -70,6 +70,12 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: IcÃ´ne de l'app (lotus)
+        run: |
+          set -e
+          cp -r "${WEBDIR}/app-icon/res/." android/app/src/main/res/
+          echo "IcÃ´nes lotus appliquÃ©es (adaptatif + hÃ©ritage)."
+
       - name: Ajouter le widget d'Ã©cran d'accueil (natif)
         run: |
           set -e
