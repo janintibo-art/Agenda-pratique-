@@ -1,0 +1,48 @@
+name: Publier un APK dans Releases
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'ID de la compilation APK réussie (onglet Actions)'
+        required: true
+        type: string
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RUN_ID: ${{ inputs.run_id }}
+    steps:
+      - name: Vérifier la compilation
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RUN_ID" =~ ^[0-9]+$ ]]
+          gh api "repos/$GH_REPO/actions/runs/$RUN_ID" > run.json
+          jq -e '.conclusion == "success" and .head_branch == "main" and (.path | split("@")[0]) == ".github/workflows/build-apk.yml"' run.json >/dev/null
+          echo "BUILD_SHA=$(jq -r .head_sha run.json)" >> "$GITHUB_ENV"
+          gh api "repos/$GH_REPO/actions/runs/$RUN_ID/artifacts" --paginate --jq '.artifacts[] | select(.name == "mon-agenda-apk" and .expired == false) | .id' | grep -q '[0-9]'
+      - name: Récupérer l'APK et calculer son empreinte
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run download "$RUN_ID" --name mon-agenda-apk --dir dist
+          test -s dist/app-debug.apk
+          mv dist/app-debug.apk dist/mon-agenda.apk
+          (cd dist && sha256sum mon-agenda.apk > mon-agenda.apk.sha256)
+      - name: Créer la publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="apk-$RUN_ID"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Cette compilation est déjà publiée. Aucun fichier remplacé."
+            exit 0
+          fi
+          gh release create "$TAG" dist/mon-agenda.apk dist/mon-agenda.apk.sha256 \
+            --target "$BUILD_SHA" --title "Mon Agenda — build $RUN_ID" --latest \
+            --notes "APK Android de test (debug), issu de la compilation $RUN_ID. Sauvegardez vos données avant une mise à jour : la signature peut différer d'une compilation à l'autre. Empreinte SHA-256 disponible."
