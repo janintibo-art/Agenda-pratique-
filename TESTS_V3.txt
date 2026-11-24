@@ -1,0 +1,16 @@
+MON AGENDA — V3 / Tests avant distribution
+
+IMPORTANT : APK debug ; sauvegarder les données V2 avant toute désinstallation. Ne pas effacer de vraies données pour les tests.
+1. Compilation GitHub : vérifier le nouveau plugin AgendaVoice et le widget existant.
+2. Ouvrir Notes > Carnet > + Note ; ajouter titre et texte ; fermer, relancer, vérifier.
+3. Photo : joindre un JPEG/PNG/WebP, vérifier aperçu après redémarrage. Essayer un fichier trop gros et retirer une pièce jointe.
+4. Dicter : autoriser le service vocal Android si demandé, prononcer une phrase, vérifier insertion. Si indisponible, utiliser le micro du clavier. La reconnaissance peut nécessiter Internet selon le service Android.
+5. Enregistrer : autoriser le micro, enregistrer 5 secondes, arrêter, lire. Tester refus de permission, puis autorisation. Vérifier que l'enregistrement s'arrête en quittant le premier plan ou après environ une minute. Importer aussi un fichier audio.
+6. Réglages > Confort visuel : tester les trois tailles, notamment petits écrans, thèmes clair/sombre. Vérifier persistance après redémarrage.
+7. Créer un rappel depuis une note : vérifier titre et texte préremplis ; choisir une heure proche, enregistrer, fermer l'application et attendre le rappel (autoriser notifications).
+8. Anniversaire : créer une tâche avec répétition Chaque année. Cocher terminée et vérifier l'occurrence suivante. Les répétitions reposent sur le système existant : la prochaine est créée à la validation de la précédente.
+9. Sauvegarde : sur données de test, exporter JSON avec note, photo et audio ; vérifier présence du fichier. Supprimer les données de test puis restaurer ; vérifier texte, image, audio, réglages. Tester import d'une sauvegarde V2 sans médias.
+10. Vérifier le widget, les musiques, les fonds zen, les tâches et le journal. Publier l'APK seulement après validation.
+
+Limites : 8 Mo par fichier, photos redimensionnées à 1600 px maximum, enregistrement ~55 s, environ 36 Mo de médias au total. La sauvegarde JSON contient les médias encodés ; conserver ce fichier à l'abri.
+Contrôles effectués ici : syntaxe JavaScript/Python, migration des métadonnées V2, validation des types de médias, calcul de date annuelle et injection native sur manifest simulé. Chromium local bloqué par politique système ; ni l'APK, ni le micro natif, ni le cycle réel de sauvegarde multimédia n'ont été testés.
