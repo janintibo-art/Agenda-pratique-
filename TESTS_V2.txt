@@ -1,0 +1,12 @@
+MON AGENDA — V2
+Modifications : mon-agenda.zip et docs/index.html uniquement. Workflow existant conservé.
+Tests réalisés : syntaxe JS, logique JS avec stockage simulé (création, édition, épinglage, liste, persistance, validation et journal).
+Non réalisés : compilation APK Android, tests navigateur complet (navigation locale bloquée), sauvegarde/restauration native, notifications Android.
+Tests Android :
+1. Ouvrir Notes > Journal du jour, écrire une note et changer de date. Revenir : texte conservé.
+2. Notes > Carnet de notes > + Note. Titre, texte, couleur, liste et épinglage. Fermer puis relancer : données conservées.
+3. Rechercher sans accent. Mettre une note à la corbeille puis restaurer. Tester suppression définitive avec confirmation.
+4. Exporter une sauvegarde JSON, vérifier que le fichier existe et contient notebook, notes, tasks. Sur un appareil de test, restaurer la sauvegarde et vérifier toutes les données. Une ancienne sauvegarde sans notebook conserve le carnet actuel.
+5. Vérifier calendrier, rappels, widget, thème sombre et fonds. Tester en mode avion.
+6. Publier l'APK de la compilation réussie avec publish-apk.yml, vérifier le site et télécharger.
+Ne pas désinstaller une version contenant des données sans sauvegarde vérifiée.
