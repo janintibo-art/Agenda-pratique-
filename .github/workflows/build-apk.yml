@@ -48,7 +48,7 @@ jobs:
           java-version: 17
 
       - name: PrÃ©parer le SDK Android
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Composants Android requis
         run: |
